@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome, {{ username }}</h1>
+      <div id="chat">
+        <div id="chat-log"></div>
+        <input type="text" id="message" placeholder="Type a message..." />
+        <button id="sendMessageButton">发送</button>
+      </div>
+      <h1></h1>
+      <button id="logoutButton">注销</button>
+      <h1></h1>
+      <button type="submit" id="Gotocreate">创作</button>
+      <h1></h1>
+      <button type="submit" id="sns">发现</button>
+      <h1></h1>
+      <button type="submit" id="setting">设置</button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="/static/home.js"></script>
+  </body>
+</html>

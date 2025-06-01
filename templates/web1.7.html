@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>微信朋友圈</title>
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/comment.js') }}"></script>
+    <script>
+        let page_num = {{ page_num }}; // 初始页面数
+        let loading = false; // 是否正在加载数据的标志
+
+        $(document).ready(function () {
+    		$(window).scroll(function () {
+        		// 当滚动到底部时触发加载下一页数据的函数
+        		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 15000) {
+            		loadNextPage();
+        		}
+    		});
+		});
+
+        function loadNextPage() {
+            if (!loading) { // 避免重复加载
+                loading = true;
+                $.ajax({
+                    type: "GET",
+                    url: window.location.pathname + "?page_num=" + (page_num + 1),
+                    success: function (response) {
+                        if (response !== '') {
+                            $('#data-container').append(response); // 将新数据追加到页面上
+                            page_num++; // 增加页面数
+                            loading = false;
+                        }
+                    }
+                });
+            }
+        }
+		
+    </script>
+	<meta charset="UTF-8">
+
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='center.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+
+<body>
+	<div id="data-container">
+	<div class="center">
+			{% for item in data %}
+			<div class="user1">
+				<div class="photo1">
+					<img src="{{ url_for('static', filename='uploaded_images/' + item['usernames'] + '.jpg') }}" />
+				</div>
+				<div class="content1">
+					<div class="name1">{{ item['usernames'] }}</div>
+					<div class="text1">{{ item['content_desc'] }}</div>
+
+					{% for i in range(0, 3) %}
+					{% set start = 3 * i %}
+					{% set end = start + 3 %}
+					{% set has_images = false %}
+
+					{% for image in item['images'][start:end] if image is not none %}
+						{% set has_images = true %}
+						<img src="{{ image }}" alt="Image">
+					{% endfor %}
+
+					{% if has_images %}
+						<div class="userimg1">
+							{% for image in item['images'][start:end] if image is not none %}
+								<img src="{{ image }}" alt="Image">
+							{% endfor %}
+						</div>
+					{% endif %}
+					{% endfor %}
+
+					<div class="record1">
+						<div class="time1">{{ item['time'] }}</div>
+					</div>
+					<div class="up"></div>
+					<div class="observe">
+						<div class="yes1">
+							<a class="heart1" href="/view/like?ID={{ item['ID'] }}"><img src="{{ url_for('static', filename='img/icon/moments/赞 (1).svg')}}"/></a>
+							{% for item in item['like_list'] %}
+							<div class="people1">{{ item }},</div>
+							{% endfor %}
+						</div>
+						{% for comment_data in item['comment_data_list'] %}
+						<div class="speak">
+    							<div class="person">{{ comment_data['comment_username'] }}：</div>
+    							<div>{{ comment_data['comment'] }}</div>
+						</div>
+						{% endfor %}
+						
+					</div>
+					<form id="sendcomment{{ item['ID'] }}">
+						<input
+						type="text"
+						name="comment"
+						id="comment"
+						placeholder="说点什么..."
+						required
+					  />
+					<button type="submit">发送</button>
+					</form>
+					<script>
+					const sendcomment{{ item['ID'] }} = document.getElementById("sendcomment{{ item['ID'] }}");
+
+					sendcomment{{ item['ID'] }}.addEventListener("submit", (e) => {
+						e.preventDefault();
+						const formData = new FormData(sendcomment{{ item['ID'] }});
+						formData.append('ID', {{ item['ID'] }});
+						const queryString = new URLSearchParams(formData).toString(); // Convert FormData to query string
+						fetch("/view/comment?" + queryString, {
+							method: "GET",
+						})
+						.then((response) => response.json())
+						.then((data) => {
+							alert(data.msg);
+						})
+						.catch((error) => console.error("Error:", error));
+						location.reload();
+					});
+
+				</script>
+					</div>
+			</div>
+			{% endfor %}
+		</div>
+		</div>
+		</div>
+
+</body>
+
+</html>

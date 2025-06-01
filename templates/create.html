@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>创作</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+    <div id="create">
+      <h1>创作</h1>
+      <form id="createForm">
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content" rows="9" cols="60" required></textarea><br>
+        <label for="image">Select Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" multiple><br><br>
+        <div id="thumbnails"></div>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+    <script src="/static/create.js"></script>
+</body>
+</html>

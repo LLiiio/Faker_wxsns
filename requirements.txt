@@ -1,0 +1,7 @@
+DBUtils
+Flask
+pyMySQL
+requests
+Jinja2
+Flask-SocketIO
+Pillow
